@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-using namepsace std;
+using namespace std;
 
 const int MAX_CAPACITY = 1000;
 
@@ -15,20 +15,20 @@ inline bool is_whitespace(char token) {
 }
 
 inline bool has_greater_precedence(char operator1, char operator2) {
-	char operators[] = {'(', ')', '/', '*', '+', '-'};
-	int precedence_map[] = {3, 3, 2, 2, 1, 1};
-	int operator_count = 6;
+	char operators[] = {'/', '*', '+', '-'};
+	int precedence_map[] = {2, 2, 1, 1};
+	int operator_count = 4;
 	
 	int precedence1 = -1, precedence2 = -1;
 	for (int i = 0; i < operator_count; i++) {
 		if (operators[i] == operator1) {
-			precedence1 = precedence1[i];
+			precedence1 = precedence_map[i];
 		}
 		if (operators[i] == operator2) {
-			precedence2 
-			
+			precedence2 = precedence_map[i];
 		}
-	} 
+	}
+	return precedence1 >= precedence2;
 } 
 
 int main() {
@@ -39,14 +39,22 @@ int main() {
 	stack<char> operator_stack(MAX_CAPACITY);
 	
 	for (char token : infix_expression) {
-		if (is_whitespace(token)) {
+		if (token == '(') {
+			operator_stack.push(token);
+		} else if (token == ')') {
+			while (operator_stack.peek() != '(') {
+				output_buffer += operator_stack.pop();
+			}
+			operator_stack.pop();
+		}
+		else if (is_whitespace(token)) {
 			continue;
 		}
 		else if (is_operand(token)) {
 			output_buffer += token;
 			continue;
 		} else {
-			while (operator_stack.size > 0 || has_greater_precedence(operator_stack.peek(), token))) {
+			while (operator_stack.size > 0 && has_greater_precedence(operator_stack.peek(), token)) {
 				output_buffer += operator_stack.pop();
 			}
 			operator_stack.push(token);
